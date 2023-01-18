@@ -1,9 +1,12 @@
 package com.tradingpit.service;
 
-import com.tradingpit.model.AffiliateTransactions;
+import java.io.IOException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.tradingpit.dto.AffiliateTransactionsDTO;
 
 public interface AffiliateTransactionsService {
 	
-	public AffiliateTransactions callConversion(AffiliateTransactions affiliateTransaction);
+	public JsonNode callConversion(AffiliateTransactionsDTO affiliateTransactionsDTO) throws IOException;
 
 }

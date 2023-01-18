@@ -16,7 +16,10 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.tradingpit.dto.AffiliateClientMapDTO;
+import com.tradingpit.dto.AffiliateTransactionsDTO;
+import com.tradingpit.dto.FirstExternalApiDTO;
 import com.tradingpit.exception.CallFailedException;
 import com.tradingpit.mapper.SimpleResourceDestinationMapper;
 import com.tradingpit.model.AffiliateClientMap;
@@ -24,9 +27,11 @@ import com.tradingpit.model.FailedCalls;
 import com.tradingpit.repository.AffiliateClientMapRepository;
 import com.tradingpit.repository.FailedCallsRepository;
 import com.tradingpit.service.CallExternalAPIService;
+import com.tradingpit.util.TradingPitUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 
 @RequiredArgsConstructor
 @Service
@@ -40,10 +45,7 @@ public class CallExternalAPIServiceImpl implements CallExternalAPIService{
 	private AffiliateClientMapRepository affiliateClientMapRepository;
 	
 	@Autowired
-	private ResourceLoader resourceLoader;
-	
-	@Autowired
-	private ObjectMapper mapper;
+	private TradingPitUtil util;
 	
 	private final SimpleResourceDestinationMapper sourceToDestinationMapper;
 	
@@ -51,7 +53,8 @@ public class CallExternalAPIServiceImpl implements CallExternalAPIService{
 	public void callFailService(AffiliateClientMapDTO affiliateClientMapDTO) throws ResourceAccessException{
 		log.info("Retrying");
 		RestTemplate restTemplate = new RestTemplate();
-	    String result = restTemplate.postForObject(affiliateClientMapDTO.getLandingPage(), affiliateClientMapDTO, String.class);
+		FirstExternalApiDTO firstExternalApiDTO = sourceToDestinationMapper.clientDTOToExternalDTO(affiliateClientMapDTO);
+	    String result = restTemplate.postForObject(firstExternalApiDTO.getLandingPage(), firstExternalApiDTO, String.class);
 	}
 	
 	@Recover
@@ -59,7 +62,7 @@ public class CallExternalAPIServiceImpl implements CallExternalAPIService{
 		log.info("Recovered");
 		
 		try {
-			failedCallRepository.save(createFailedCall(ex.getMessage(), affiliateClientMapDTO));
+			failedCallRepository.save(util.createFailedCall(ex.getMessage(), affiliateClientMapDTO));
 		} catch (JsonProcessingException e) {
 			log.info(e.getMessage());
 		}
@@ -72,25 +75,13 @@ public class CallExternalAPIServiceImpl implements CallExternalAPIService{
 		log.info("Recovered");
 		
 		try {
-			failedCallRepository.save(createFailedCall(ex.getMessage(), affiliateClientMapDTO));
+			failedCallRepository.save(util.createFailedCall(ex.getMessage(), affiliateClientMapDTO));
 		} catch (JsonProcessingException e) {
 			log.info(e.getMessage());
 		}
 		
         throw new CallFailedException("Call to external API failed");
     }
-	
-	private FailedCalls createFailedCall(String ex, AffiliateClientMapDTO affiliateClientMapDTO) throws JsonProcessingException {
-		FailedCalls failedCall = new FailedCalls();
-		
-		failedCall.setClientId(affiliateClientMapDTO.getClientId());
-		failedCall.setPayload(mapper.writeValueAsString(affiliateClientMapDTO));
-		failedCall.setProcessed(false);
-		failedCall.setReasonOfFailure(ex);
-		failedCall.setRequestType("createClick");
-		
-		return failedCall;
-	}
 
 	@Override
 	public JsonNode callSuccessService(AffiliateClientMapDTO affiliateClientMapDTO) throws IOException {
@@ -98,7 +89,7 @@ public class CallExternalAPIServiceImpl implements CallExternalAPIService{
 		JsonNode clickId;
 		
 		try {
-			clickId = extractUUIDFromFile();
+			clickId = util.extractUUIDFromFile();
 		} catch (IOException e) {
 			log.info("IOException caught "+ e.getMessage());
 			throw new IOException(e.getMessage());
@@ -108,13 +99,5 @@ public class CallExternalAPIServiceImpl implements CallExternalAPIService{
 		affiliateClientMap = affiliateClientMapRepository.save(affiliateClientMap);
 		return clickId;
 	}
-	
-	private JsonNode extractUUIDFromFile() throws IOException {
-		Resource resource = resourceLoader.getResource("classpath:FirstExternalApiResponse.txt");
-		String myString = IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8);
-		JsonNode jsonNode = mapper.readTree(myString);
-		return jsonNode;
-	}
-	
 
 }

@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.tradingpit.dto.AffiliateClientMapDTO;
+import com.tradingpit.dto.AffiliateTransactionsDTO;
 import com.tradingpit.model.AffiliateClientMap;
+import com.tradingpit.model.AffiliateTransactions;
 import com.tradingpit.repository.FailedCallsRepository;
 import com.tradingpit.service.AffiliateClientMapService;
 import com.tradingpit.service.AffiliateTransactionsService;
@@ -29,26 +31,28 @@ public class AffiliateClientController {
 
 	@PostMapping("/client")
 	public JsonNode clientCall(@Valid @RequestBody AffiliateClientMapDTO affiliateClientMapDTO){
-		JsonNode clickId = null;
+		JsonNode jsonResponse = null;
 		try {
-			clickId = clientService.callClicks(affiliateClientMapDTO);
+			jsonResponse = clientService.callClicks(affiliateClientMapDTO);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return clickId;
+		return jsonResponse;
 		
 	}
 	
-	@PostMapping("/conversion")
-	public String conversionCall(/*@Valid @RequestBody AffiliateClientMapDTO customer*/){
-		
-		
-		
-		return "General Kenobi";
-		
-	}
+//	@PostMapping("/conversion")
+//	public JsonNode conversionCall(@Valid @RequestBody AffiliateTransactionsDTO affiliateTransactionsDTO){
+//		JsonNode jsonResponse = null;
+//		
+//		jsonResponse = transactionService.callConversion(affiliateTransactionsDTO);
+//		
+//		
+//		return jsonResponse;
+//		
+//	}
 	
 	
 	

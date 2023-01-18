@@ -3,7 +3,6 @@ package com.tradingpit.serviceImpl;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.tradingpit.dto.AffiliateClientMapDTO;
