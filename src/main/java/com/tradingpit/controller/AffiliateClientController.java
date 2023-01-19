@@ -1,6 +1,8 @@
 package com.tradingpit.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +32,7 @@ public class AffiliateClientController {
 	private AffiliateTransactionsService transactionService;
 
 	@PostMapping("/client")
-	public JsonNode clientCall(@Valid @RequestBody AffiliateClientMapDTO affiliateClientMapDTO, @RequestHeader("successful") boolean successful){
+	public ResponseEntity<JsonNode> clientCall(@Valid @RequestBody AffiliateClientMapDTO affiliateClientMapDTO, @RequestHeader("successful") boolean successful){
 		JsonNode jsonResponse = null;
 		try {
 			jsonResponse = clientService.callClicks(affiliateClientMapDTO, successful);
@@ -39,19 +41,21 @@ public class AffiliateClientController {
 			e.printStackTrace();
 		}
 		
-		return jsonResponse;
-		
+		return new ResponseEntity<JsonNode>(jsonResponse, HttpStatus.OK);
+	
 	}
 	
 	@PostMapping("/conversion")
-	public ResponseEntity<JsonNode> conversionCall(@Valid @RequestBody AffiliateTransactionsDTO affiliateTransactionsDTO, @RequestHeader("successful") boolean successful) throws IOException{
+	public ResponseEntity<?> conversionCall(@Valid @RequestBody AffiliateTransactionsDTO affiliateTransactionsDTO, @RequestHeader("successful") boolean successful) throws IOException{
 		JsonNode jsonResponse = null;
+		Map<String,String> jsonId = new HashMap<>();
 		
 		jsonResponse = transactionService.callConversion(affiliateTransactionsDTO, successful);
-		
-		
-		return new ResponseEntity<JsonNode>(jsonResponse, HttpStatus.CREATED);
-		
+
+		jsonId.put("id", jsonResponse.get("id").asText());
+	
+		return new ResponseEntity<Object>(jsonId, HttpStatus.OK);
+	
 	}
 	
 	

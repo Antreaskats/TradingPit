@@ -43,7 +43,7 @@ public class AffiliateTransactionsServiceImpl implements AffiliateTransactionsSe
 		JsonNode jsonResponse = callSecondExternalServiceAPI.callSuccessService(affiliateTransactionsDTO);
 
 		return jsonResponse;
-		
+	
 	}
 	
 	

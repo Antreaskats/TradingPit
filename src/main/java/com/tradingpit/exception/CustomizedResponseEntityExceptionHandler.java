@@ -26,7 +26,7 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.UNPROCESSABLE_ENTITY);
 	}
 	
-	@ExceptionHandler(CallFailedException.class)
+	@ExceptionHandler(ClientNotFoundException.class)
 	public final ResponseEntity<Object> handleClientNotFoundExceptions(Exception ex, WebRequest request) throws Exception{
 		
 		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));

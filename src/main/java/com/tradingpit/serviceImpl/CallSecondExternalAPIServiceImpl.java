@@ -45,7 +45,8 @@ public class CallSecondExternalAPIServiceImpl implements CallSecondExternalAPISe
 	@Value("${file.secondFile}")
 	private String filePath;
 	
-	private final String URI = "http://exercise/tap/conversions";
+	@Value("${external.uri}")
+	private String URI;
 	
 	@Override
 	public void callFailService(AffiliateTransactionsDTO affiliateTransactionsDTO, SecondExternalApiDTO secondExternalDTO) throws ResourceAccessException {
