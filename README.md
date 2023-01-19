@@ -1,5 +1,5 @@
 
-# Trading Pit excercise
+# Trading Pit exercise
 
 This is a project that was created to simulate two APIs that make calls to some external
 vendors and return the appropriate response.
