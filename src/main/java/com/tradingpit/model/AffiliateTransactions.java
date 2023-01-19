@@ -2,6 +2,7 @@ package com.tradingpit.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +23,7 @@ public class AffiliateTransactions {
 	
 	private String referralCode;
 	
-	private BigInteger orderId;
+	private String orderId;
 	
 	private String currency;
 	
@@ -32,4 +33,5 @@ public class AffiliateTransactions {
 	
 	private String transactionType;
 
+	private LocalDateTime creationDate;
 }

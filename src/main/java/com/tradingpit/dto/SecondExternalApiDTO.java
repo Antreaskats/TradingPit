@@ -17,7 +17,7 @@ public class SecondExternalApiDTO {
 	
 	private String customerId;
 	
-	private String user_agent;
+	private String userAgent;
 	
 	private String ip;
 	

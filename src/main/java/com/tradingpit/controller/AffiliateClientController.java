@@ -3,6 +3,8 @@ package com.tradingpit.controller;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.tradingpit.dto.AffiliateClientMapDTO;
 import com.tradingpit.dto.AffiliateTransactionsDTO;
-import com.tradingpit.model.AffiliateClientMap;
-import com.tradingpit.model.AffiliateTransactions;
-import com.tradingpit.repository.FailedCallsRepository;
 import com.tradingpit.service.AffiliateClientMapService;
 import com.tradingpit.service.AffiliateTransactionsService;
 
@@ -43,16 +42,16 @@ public class AffiliateClientController {
 		
 	}
 	
-//	@PostMapping("/conversion")
-//	public JsonNode conversionCall(@Valid @RequestBody AffiliateTransactionsDTO affiliateTransactionsDTO){
-//		JsonNode jsonResponse = null;
-//		
-//		jsonResponse = transactionService.callConversion(affiliateTransactionsDTO);
-//		
-//		
-//		return jsonResponse;
-//		
-//	}
+	@PostMapping("/conversion")
+	public ResponseEntity<JsonNode> conversionCall(@Valid @RequestBody AffiliateTransactionsDTO affiliateTransactionsDTO) throws IOException{
+		JsonNode jsonResponse = null;
+		
+		jsonResponse = transactionService.callConversion(affiliateTransactionsDTO);
+		
+		
+		return new ResponseEntity<JsonNode>(jsonResponse, HttpStatus.CREATED);
+		
+	}
 	
 	
 	

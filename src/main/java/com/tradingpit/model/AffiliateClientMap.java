@@ -1,6 +1,7 @@
 package com.tradingpit.model;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,5 +23,9 @@ public class AffiliateClientMap {
 	private String clickId;
 	
 	private String userAgent;
+	
+	private String ip;
+	
+	private LocalDateTime creationDate;
 	
 }

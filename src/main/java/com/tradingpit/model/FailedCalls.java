@@ -1,6 +1,7 @@
 package com.tradingpit.model;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,4 +26,5 @@ public class FailedCalls {
 	
 	private Boolean processed;
 	
+	private LocalDateTime failureDate;
 }

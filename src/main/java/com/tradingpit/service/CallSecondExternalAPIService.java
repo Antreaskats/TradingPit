@@ -9,11 +9,12 @@ import org.springframework.web.client.ResourceAccessException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.tradingpit.dto.AffiliateTransactionsDTO;
+import com.tradingpit.dto.SecondExternalApiDTO;
 
 public interface CallSecondExternalAPIService {
 
 	@Retryable(retryFor = {ResourceAccessException.class, HttpClientErrorException.class}, backoff= @Backoff(1000), maxAttempts = 3)
-	public void callFailService(AffiliateTransactionsDTO affiliateTransactionsDTO) throws ResourceAccessException;
+	public void callFailService(AffiliateTransactionsDTO affiliateTransactionsDTO, SecondExternalApiDTO secondExternalDTO) throws ResourceAccessException;
 	
 	public JsonNode callSuccessService(AffiliateTransactionsDTO affiliateTransactionsDTO) throws IOException;
 	

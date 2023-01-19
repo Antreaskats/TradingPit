@@ -1,8 +1,11 @@
 package com.tradingpit.serviceImpl;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
@@ -10,10 +13,15 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradingpit.dto.AffiliateClientMapDTO;
 import com.tradingpit.dto.AffiliateTransactionsDTO;
+import com.tradingpit.dto.SecondExternalApiDTO;
 import com.tradingpit.exception.CallFailedException;
-import com.tradingpit.mapper.SimpleResourceDestinationMapper;
+import com.tradingpit.mapper.AffiliateResourceDestinationMapper;
+import com.tradingpit.model.AffiliateClientMap;
+import com.tradingpit.model.AffiliateTransactions;
+import com.tradingpit.repository.AffiliateClientMapRepository;
 import com.tradingpit.repository.AffiliateTransactionsRepository;
 import com.tradingpit.repository.FailedCallsRepository;
 import com.tradingpit.service.CallSecondExternalAPIService;
@@ -36,24 +44,29 @@ public class CallSecondExternalAPIServiceImpl implements CallSecondExternalAPISe
 	@Autowired
 	private TradingPitUtil util;
 	
-	private final SimpleResourceDestinationMapper sourceToDestinationMapper;
+	@Autowired
+	private ObjectMapper mapper;
+	
+	
+	@Value("${file.secondFile}")
+	private String filePath;
 	
 	private final String URI = "http://exercise/tap/conversions";
 	
 	@Override
-	public void callFailService(AffiliateTransactionsDTO affiliateTransactionsDTO) throws ResourceAccessException {
+	public void callFailService(AffiliateTransactionsDTO affiliateTransactionsDTO, SecondExternalApiDTO secondExternalDTO) throws ResourceAccessException {
 		log.info("Retrying");
 		RestTemplate restTemplate = new RestTemplate();
-	    String result = restTemplate.postForObject(URI, affiliateTransactionsDTO, String.class);
+	    String result = restTemplate.postForObject(URI, secondExternalDTO, String.class);
 		
 	}
 	
 	@Recover
-    public void recover(ResourceAccessException ex, AffiliateClientMapDTO affiliateClientMapDTO) throws CallFailedException{
+    public void recover(ResourceAccessException ex, AffiliateTransactionsDTO affiliateTransactionsDTO) throws CallFailedException{
 		log.info("Recovered");
 		
 		try {
-			failedCallRepository.save(util.createFailedCall(ex.getMessage(), affiliateClientMapDTO));
+			failedCallRepository.save(util.createFailedCall(ex.getMessage(), mapper.writeValueAsString(affiliateTransactionsDTO), affiliateTransactionsDTO.getClientId(), "createConversion"));
 		} catch (JsonProcessingException e) {
 			log.info(e.getMessage());
 		}
@@ -63,8 +76,19 @@ public class CallSecondExternalAPIServiceImpl implements CallSecondExternalAPISe
 
 	@Override
 	public JsonNode callSuccessService(AffiliateTransactionsDTO affiliateTransactionsDTO) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		JsonNode json;
+		
+		try {
+			json = util.extractStringFromFile(filePath);
+		} catch (IOException e) {
+			log.info("IOException caught "+ e.getMessage());
+			throw new IOException(e.getMessage());
+		}
+		
+		AffiliateTransactions affiliateTransaction = util.createTransactions(affiliateTransactionsDTO, filePath);
+		
+		affiliateTransaction = transactionsRepository.save(affiliateTransaction);
+		
+		return json;
 	}
-
 }
