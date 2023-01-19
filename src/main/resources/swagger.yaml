@@ -1,0 +1,120 @@
+---
+openapi: 3.0.0
+info:
+  title: trading-pit-api
+  description: The API for the Trading Pit excercise
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/KATSOUDASANTREAS/TradingPit/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /register/client:
+    post:
+      tags:
+      - client
+      operationId: client
+      parameters:
+      - name: successful
+        in: header
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: boolean
+          format: true - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterClientRequest'
+      responses:
+        "200":
+          description: successfully registered client
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterClientResponse'
+  /register/conversion:
+    post:
+      tags:
+      - conversion
+      operationId: conversion
+      parameters:
+      - name: successful
+        in: header
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: boolean
+          format: true - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterConversionRequest'
+      responses:
+        "200":
+          description: successfully registered client
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterConversionResponse'
+components:
+  schemas:
+    RegisterClientRequest:
+      type: object
+      properties:
+        clientId:
+          type: string
+          format: uuid
+          example: 0d76e348-9724-11ed-a8fc-0242ac120002
+        landingPage:
+          type: string
+          format: uri
+          example: http://exercise/tap/clicks
+        referralCode:
+          type: string
+          format: alphanumerical
+          example: "133114"
+        userAgent:
+          type: string
+          format: name
+          example: Antreas
+        ip:
+          type: string
+          format: IP address
+          example: 192.158.1.38
+    RegisterClientResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 0d76e348-9724-11ed-a8fc-0242ac120002
+    RegisterConversionRequest:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+          example: 0d76e348-9724-11ed-a8fc-0242ac120002
+        totalPrice:
+          type: number
+          format: amount
+          example: 500.55
+        clientId:
+          type: string
+          format: uuid
+          example: 0d76e348-9724-11ed-a8fc-0242ac120005
+        transactionType:
+          type: string
+          format: type of transaction
+          example: New
+    RegisterConversionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: number
+          example: 152
