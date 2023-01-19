@@ -20,9 +20,11 @@ import com.tradingpit.service.AffiliateClientMapService;
 import com.tradingpit.service.AffiliateTransactionsService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/register")
+@Slf4j
 public class AffiliateClientController {
 	
 	@Autowired
@@ -32,13 +34,13 @@ public class AffiliateClientController {
 	private AffiliateTransactionsService transactionService;
 
 	@PostMapping("/client")
-	public ResponseEntity<JsonNode> clientCall(@Valid @RequestBody AffiliateClientMapDTO affiliateClientMapDTO, @RequestHeader("successful") boolean successful){
+	public ResponseEntity<JsonNode> clientCall(@Valid @RequestBody AffiliateClientMapDTO affiliateClientMapDTO, @RequestHeader("successful") boolean successful) throws IOException{
 		JsonNode jsonResponse = null;
 		try {
 			jsonResponse = clientService.callClicks(affiliateClientMapDTO, successful);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info(e.getMessage());
+			throw new IOException(e.getMessage());
 		}
 		
 		return new ResponseEntity<JsonNode>(jsonResponse, HttpStatus.OK);
