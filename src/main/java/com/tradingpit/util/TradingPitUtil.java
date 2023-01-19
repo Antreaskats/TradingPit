@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradingpit.dto.AffiliateTransactionsDTO;
 import com.tradingpit.dto.SecondExternalApiDTO;
+import com.tradingpit.exception.ClientNotFoundException;
 import com.tradingpit.mapper.AffiliateResourceDestinationMapper;
 import com.tradingpit.model.AffiliateClientMap;
 import com.tradingpit.model.AffiliateTransactions;
@@ -96,7 +97,7 @@ public class TradingPitUtil {
 		secondExternalDTO = affiliateToDestinationMapper.clientMapToSecondExternalDTO(clientMap);
 		secondExternalDTO = affiliateToDestinationMapper.updateSecondExternalDTO(secondExternalDTO, affiliateTransactionsDTO);
 		secondExternalDTO.setCurrency(currency);
-		
+	
 		return secondExternalDTO;
 	}
 
@@ -106,6 +107,8 @@ public class TradingPitUtil {
 		clientMapList = clientMapRepository.findTopByClientIdOrderByCreationDateDesc(affiliateTransactionsDTO.getClientId());
 		if(clientMapList.isPresent()) {
 			clientMap = clientMapList.get();
+		}else {
+			throw new ClientNotFoundException("Client with clientId: " + affiliateTransactionsDTO.getClientId() +" doesn't exist");
 		}
 		return clientMap;
 	}

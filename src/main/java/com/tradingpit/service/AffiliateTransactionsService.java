@@ -7,6 +7,6 @@ import com.tradingpit.dto.AffiliateTransactionsDTO;
 
 public interface AffiliateTransactionsService {
 	
-	public JsonNode callConversion(AffiliateTransactionsDTO affiliateTransactionsDTO) throws IOException;
+	public JsonNode callConversion(AffiliateTransactionsDTO affiliateTransactionsDTO, boolean successful) throws IOException;
 
 }

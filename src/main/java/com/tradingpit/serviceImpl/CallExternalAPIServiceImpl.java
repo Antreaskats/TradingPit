@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
@@ -48,13 +47,14 @@ public class CallExternalAPIServiceImpl implements CallExternalAPIService{
 	private String filePath;
 	
 	private final AffiliateResourceDestinationMapper affiliateToDestinationMapper;
-	
+
 	@Override
 	public void callFailService(AffiliateClientMapDTO affiliateClientMapDTO) throws ResourceAccessException{
 		log.info("Retrying");
 		RestTemplate restTemplate = new RestTemplate();
 		FirstExternalApiDTO firstExternalApiDTO = affiliateToDestinationMapper.clientDTOToExternalDTO(affiliateClientMapDTO);
 	    String result = restTemplate.postForObject(firstExternalApiDTO.getLandingPage(), firstExternalApiDTO, String.class);
+	    log.info(result);
 	}
 	
 	@Recover
@@ -68,19 +68,6 @@ public class CallExternalAPIServiceImpl implements CallExternalAPIService{
 		}
 		
 		throw new CallFailedException("Call to external API failed");
-    }
-	
-	@Recover
-    public void recover(HttpClientErrorException ex, AffiliateClientMapDTO affiliateClientMapDTO) throws CallFailedException{
-		log.info("Recovered");
-		
-		try {
-			failedCallRepository.save(util.createFailedCall(ex.getMessage(), mapper.writeValueAsString(affiliateClientMapDTO), affiliateClientMapDTO.getClientId(), "createClick"));
-		} catch (JsonProcessingException e) {
-			log.info(e.getMessage());
-		}
-		
-        throw new CallFailedException("Call to external API failed");
     }
 
 	@Override

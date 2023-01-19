@@ -9,7 +9,6 @@ import org.springframework.web.client.ResourceAccessException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.tradingpit.dto.AffiliateClientMapDTO;
-import com.tradingpit.dto.AffiliateTransactionsDTO;
 
 
 public interface CallExternalAPIService {

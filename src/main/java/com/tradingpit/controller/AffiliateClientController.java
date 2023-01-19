@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,10 +30,10 @@ public class AffiliateClientController {
 	private AffiliateTransactionsService transactionService;
 
 	@PostMapping("/client")
-	public JsonNode clientCall(@Valid @RequestBody AffiliateClientMapDTO affiliateClientMapDTO){
+	public JsonNode clientCall(@Valid @RequestBody AffiliateClientMapDTO affiliateClientMapDTO, @RequestHeader("successful") boolean successful){
 		JsonNode jsonResponse = null;
 		try {
-			jsonResponse = clientService.callClicks(affiliateClientMapDTO);
+			jsonResponse = clientService.callClicks(affiliateClientMapDTO, successful);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,10 +44,10 @@ public class AffiliateClientController {
 	}
 	
 	@PostMapping("/conversion")
-	public ResponseEntity<JsonNode> conversionCall(@Valid @RequestBody AffiliateTransactionsDTO affiliateTransactionsDTO) throws IOException{
+	public ResponseEntity<JsonNode> conversionCall(@Valid @RequestBody AffiliateTransactionsDTO affiliateTransactionsDTO, @RequestHeader("successful") boolean successful) throws IOException{
 		JsonNode jsonResponse = null;
 		
-		jsonResponse = transactionService.callConversion(affiliateTransactionsDTO);
+		jsonResponse = transactionService.callConversion(affiliateTransactionsDTO, successful);
 		
 		
 		return new ResponseEntity<JsonNode>(jsonResponse, HttpStatus.CREATED);

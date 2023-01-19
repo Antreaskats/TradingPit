@@ -8,6 +8,6 @@ import com.tradingpit.dto.AffiliateClientMapDTO;
 
 public interface AffiliateClientMapService {
 
-	public JsonNode callClicks(AffiliateClientMapDTO affiliateClientMapDTO) throws IOException;
+	public JsonNode callClicks(AffiliateClientMapDTO affiliateClientMapDTO, boolean successful) throws IOException;
 	
 }

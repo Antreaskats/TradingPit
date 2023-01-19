@@ -20,8 +20,8 @@ public class AffiliateClientMapServiceImpl implements AffiliateClientMapService{
 	private CallExternalAPIService callExternalService;
 
 	@Override
-	public JsonNode callClicks(AffiliateClientMapDTO affiliateClientMapDTO) throws IOException {
-		if (!affiliateClientMapDTO.isSuccessful()) {
+	public JsonNode callClicks(AffiliateClientMapDTO affiliateClientMapDTO, boolean successful) throws IOException {
+		if (!successful) {
 			try {
 				callExternalService.callFailService(affiliateClientMapDTO);
 			} catch (CallFailedException e) {
@@ -30,7 +30,7 @@ public class AffiliateClientMapServiceImpl implements AffiliateClientMapService{
 			}
 		}
 		JsonNode clickId = callExternalService.callSuccessService(affiliateClientMapDTO);
-
+		
 		return clickId;
 		
 	}

@@ -1,6 +1,5 @@
 package com.tradingpit.dto;
 
-import io.micrometer.common.lang.NonNull;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -23,7 +22,4 @@ public class AffiliateClientMapDTO {
 
 	@NotEmpty(message="IP is mandatory")
 	private String ip;
-	
-	@NonNull
-	private boolean successful;
 }

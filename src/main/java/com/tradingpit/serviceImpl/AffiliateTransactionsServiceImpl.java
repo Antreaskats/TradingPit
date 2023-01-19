@@ -30,8 +30,8 @@ public class AffiliateTransactionsServiceImpl implements AffiliateTransactionsSe
 	private String currency;
 
 	@Override
-	public JsonNode callConversion(AffiliateTransactionsDTO affiliateTransactionsDTO) throws IOException {
-		if (!affiliateTransactionsDTO.isSuccessful()) {
+	public JsonNode callConversion(AffiliateTransactionsDTO affiliateTransactionsDTO, boolean successful) throws IOException {
+		if (!successful) {
 			SecondExternalApiDTO secondExternalApiDTO = util.createSecondExternalApiDTO(affiliateTransactionsDTO, currency);
 			try {
 				callSecondExternalServiceAPI.callFailService(affiliateTransactionsDTO, secondExternalApiDTO);

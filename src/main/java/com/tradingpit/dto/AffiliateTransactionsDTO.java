@@ -24,7 +24,4 @@ public class AffiliateTransactionsDTO {
 	@Pattern(regexp = "(New|Reset|Extend)", message = "The transaction type can only take values: New, Reset and Extend")
 	private String transactionType;
 	
-	@NonNull
-	private boolean successful;
-	
 }

@@ -1,8 +1,6 @@
 package com.tradingpit.serviceImpl;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,14 +12,10 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradingpit.dto.AffiliateClientMapDTO;
 import com.tradingpit.dto.AffiliateTransactionsDTO;
 import com.tradingpit.dto.SecondExternalApiDTO;
 import com.tradingpit.exception.CallFailedException;
-import com.tradingpit.mapper.AffiliateResourceDestinationMapper;
-import com.tradingpit.model.AffiliateClientMap;
 import com.tradingpit.model.AffiliateTransactions;
-import com.tradingpit.repository.AffiliateClientMapRepository;
 import com.tradingpit.repository.AffiliateTransactionsRepository;
 import com.tradingpit.repository.FailedCallsRepository;
 import com.tradingpit.service.CallSecondExternalAPIService;
@@ -58,7 +52,7 @@ public class CallSecondExternalAPIServiceImpl implements CallSecondExternalAPISe
 		log.info("Retrying");
 		RestTemplate restTemplate = new RestTemplate();
 	    String result = restTemplate.postForObject(URI, secondExternalDTO, String.class);
-		
+	    log.info(result);
 	}
 	
 	@Recover
